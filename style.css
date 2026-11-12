@@ -1,0 +1,62 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f5f7;
+  color: #222;
+  margin: 0;
+  padding-bottom: 20px;
+}
+header { background: #2a6f97; color: white; padding: 14px; text-align: center; }
+header h1 { margin: 0; font-size: 24px; }
+header p { margin: 4px 0 0; font-size: 14px; }
+
+#tabs { display: flex; background: #ddd; }
+#tabs button {
+  flex: 1; border: none; background: #ddd; color: #222;
+  padding: 12px 2px; font-size: 13px; margin: 0; border-radius: 0; cursor: pointer;
+}
+#tabs button.active { background: white; font-weight: bold; border-bottom: 3px solid #2a6f97; }
+#tabs button:disabled { color: #999; cursor: default; background: #ddd; }
+
+#totals { background: #fff3cd; padding: 8px; text-align: center; font-size: 14px; }
+
+main { max-width: 600px; margin: 0 auto; padding: 12px; }
+.stage { display: none; background: white; border: 1px solid #ccc; border-radius: 8px; padding: 14px; }
+.stage.show { display: block; }
+.stage h2 { margin-top: 0; }
+.where { color: #2a6f97; font-weight: bold; font-size: 14px; }
+.txt { background: #eef6fb; border-left: 4px solid #2a6f97; padding: 8px; min-height: 40px; font-size: 14px; }
+
+.area {
+  background: #eef6fb; border: 2px dashed #9ec5de; border-radius: 8px;
+  min-height: 90px; padding: 10px; margin: 10px 0;
+  display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; align-items: center;
+}
+.grp { text-align: center; font-size: 12px; max-width: 150px; }
+.c {
+  display: inline-block; width: 18px; height: 18px; border-radius: 50%;
+  background: #333; margin: 2px; transition: opacity 0.6s, transform 0.6s;
+}
+.c.gone { background: #999; opacity: 0.4; transform: translateY(-14px); }
+
+.pyr {
+  background: #f6d55c; border: 2px solid #b59a00; border-radius: 12px;
+  padding: 10px 14px; text-align: center; font-size: 13px; cursor: pointer;
+}
+.pyr.done { background: #8fd694; border-color: #3c8d40; cursor: default; }
+
+svg { width: 100%; height: auto; display: block; background: #fafafa; border: 1px solid #ddd; border-radius: 8px; }
+svg text { font-family: Arial, sans-serif; }
+.node { fill: white; stroke: #3c8d40; stroke-width: 2.5; }
+.node.hot { fill: #f4a259; }
+#token { transition: transform 0.6s; }
+
+button {
+  font-size: 15px; padding: 10px 12px; margin: 4px 4px 4px 0;
+  border: none; border-radius: 6px; background: #2a6f97; color: white; cursor: pointer;
+}
+button:disabled { background: #aaa; cursor: default; }
+.msg { color: #2d6a4f; font-weight: bold; min-height: 20px; }
+
+#nav { max-width: 600px; margin: 0 auto; display: flex; justify-content: space-between; padding: 0 12px; }
+#nav button { background: #444; }
+#nav button:disabled { background: #aaa; }
