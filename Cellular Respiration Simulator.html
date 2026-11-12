@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cellular Respiration Simulator</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap">
+<style>
+:root{--bg:#eef3ee;--panel:#fff;--ink:#17302a;--mute:#5b6f68;--line:#c9d6cf;--glu:#d9951a;--atp:#c2336b;--o2:#2f73d1;--co2:#6b7280;--cell:#f7faf5;--mito:#fbe9dc;--zone:#e1ece5;--on:#17302a;--onink:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a17;--panel:#16251f;--ink:#e6f0ea;--mute:#8fa59b;--line:#2c4038;--glu:#f0b43c;--atp:#f0689c;--o2:#6aa5f5;--co2:#9aa3b0;--cell:#13221d;--mito:#2b2420;--zone:#1f342c;--on:#e6f0ea;--onink:#0e1a17}}
+:root[data-theme="dark"]{--bg:#0e1a17;--panel:#16251f;--ink:#e6f0ea;--mute:#8fa59b;--line:#2c4038;--glu:#f0b43c;--atp:#f0689c;--o2:#6aa5f5;--co2:#9aa3b0;--cell:#13221d;--mito:#2b2420;--zone:#1f342c;--on:#e6f0ea;--onink:#0e1a17}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Bricolage Grotesque",system-ui,sans-serif}
+main{max-width:640px;margin:0 auto;padding:16px}
+h1{font-size:26px;font-weight:800;margin:4px 0 2px;letter-spacing:-.01em}
+.sub{color:var(--mute);margin:0 0 12px;font-size:15px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}
+svg{width:100%;height:auto;display:block}
+.zone{fill:var(--zone);stroke:var(--line);stroke-width:1.5;transition:fill .25s,stroke .25s}
+.zone.on{fill:var(--glu);fill-opacity:.35;stroke:var(--glu);stroke-width:2.5}
+.zl{font-size:11px;fill:var(--mute);font-weight:600;text-anchor:middle}
+.pop{font-size:12px;font-weight:800;text-anchor:middle;paint-order:stroke;stroke:var(--panel);stroke-width:3px}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.ctl{flex:1 1 200px}
+label{display:flex;justify-content:space-between;font-weight:600;font-size:14px;margin-bottom:4px}
+input[type=range]{width:100%;accent-color:var(--atp);height:32px}
+.btns{display:flex;gap:8px;margin-top:6px}
+button{font:inherit;font-weight:600;border-radius:10px;padding:11px 16px;border:1.5px solid var(--on);background:transparent;color:var(--ink);cursor:pointer;min-height:44px}
+button.p{background:var(--on);color:var(--onink);flex:1}
+button:focus-visible,input:focus-visible{outline:3px solid var(--o2);outline-offset:2px}
+button:disabled{opacity:.5}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.st{border:1px solid var(--line);border-radius:10px;padding:8px;text-align:center}
+.st b{display:block;font-size:24px;font-weight:800;line-height:1.1}
+.st span{font-size:12px;color:var(--mute)}
+.st.big{grid-column:span 3;background:var(--atp);border-color:var(--atp);color:#fff}
+.st.big span{color:#fff;opacity:.9}.st.big b{font-size:38px}
+#info h2{font-size:17px;margin:0 0 4px}
+#info p{margin:0;color:var(--mute);font-size:15px}
+.eq{font-size:13px;color:var(--mute);margin:8px 0 0}
+@media (prefers-reduced-motion:reduce){.zone{transition:none}}
+</style>
+</head>
+<body>
+<main>
+<h1>Cellular respiration</h1>
+<p class="sub">Send glucose through the cell and watch where the ATP comes from.</p>
+
+<div class="card">
+<svg viewBox="0 0 360 330" role="img" aria-label="Cell with cytoplasm and a mitochondrion where glucose is broken down">
+<rect x="4" y="4" width="352" height="322" rx="44" fill="var(--cell)" stroke="var(--line)" stroke-width="2"/>
+<text class="zl" x="180" y="26">Cytoplasm</text>
+<rect class="zone" id="z1" x="20" y="48" width="130" height="76" rx="12" data-s="1"/>
+<text class="zl" x="85" y="68">Glycolysis</text>
+<rect class="zone" id="zf" x="210" y="48" width="130" height="76" rx="12" data-s="f"/>
+<text class="zl" x="275" y="68">Fermentation</text>
+<rect x="30" y="146" width="300" height="168" rx="80" fill="var(--mito)" stroke="var(--glu)" stroke-width="2.5"/>
+<rect x="46" y="160" width="268" height="140" rx="66" fill="none" stroke="var(--glu)" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text class="zl" x="180" y="180" style="font-size:12px">Mitochondrion</text>
+<rect class="zone" id="z2" x="68" y="196" width="112" height="86" rx="12" data-s="2"/>
+<text class="zl" x="124" y="214">Krebs cycle</text>
+<rect class="zone" id="z3" x="190" y="196" width="112" height="86" rx="12" data-s="3"/>
+<text class="zl" x="246" y="214">Electron transport</text>
+<g id="layer"></g>
+</svg>
+<div id="info" aria-live="polite"><h2>Ready</h2><p>Pick how much glucose and oxygen, then press Run. Tap a labelled area to learn what happens there.</p></div>
+</div>
+
+<div class="card">
+<div class="row">
+<div class="ctl"><label for="g">Glucose molecules <span id="gv">3</span></label><input id="g" type="range" min="1" max="6" value="3"></div>
+<div class="ctl"><label for="o">Oxygen available <span id="ov">100%</span></label><input id="o" type="range" min="0" max="100" step="10" value="100"></div>
+</div>
+<div class="btns"><button class="p" id="run">Run</button><button id="reset">Reset</button></div>
+<p class="eq">C₆H₁₂O₆ + 6 O₂ → 6 CO₂ + 6 H₂O + about 30 ATP. Without oxygen: glucose → 2 lactate + 2 ATP.</p>
+</div>
+
+<div class="card stats">
+<div class="st big"><b id="atp">0</b><span>ATP made</span></div>
+<div class="st"><b id="car">0</b><span>NADH / FADH₂</span></div>
+<div class="st"><b id="co2">0</b><span>CO₂ released</span></div>
+<div class="st"><b id="o2u">0</b><span>O₂ used</span></div>
+<div class="st"><b id="h2o">0</b><span>H₂O made</span></div>
+<div class="st"><b id="lac">0</b><span>Lactate made</span></div>
+</div>
+</main>
+
+<script>
+(function(){
+var NS="http://www.w3.org/2000/svg",layer=document.getElementById("layer");
+var $=function(i){return document.getElementById(i)};
+var T={atp:0,car:0,co2:0,o2u:0,h2o:0,lac:0},running=0,mols=[];
+var INFO={
+"1":["Glycolysis","Happens in the cytoplasm and needs no oxygen. One glucose splits into 2 pyruvate, making a net 2 ATP and 2 NADH."],
+"2":["Pyruvate oxidation and Krebs cycle","In the mitochondrial matrix, pyruvate is broken down completely. Each glucose releases 6 CO₂ and yields 2 ATP, 8 NADH and 2 FADH₂ (counting the step before the cycle)."],
+"3":["Electron transport chain","NADH and FADH₂ hand electrons to proteins in the inner membrane. Oxygen accepts them at the end and becomes water. The proton gradient this builds drives about 26 ATP per glucose."],
+"f":["Fermentation","With no oxygen, pyruvate is turned into lactate so glycolysis can keep running. The cell stays alive but gains only the 2 ATP from glycolysis."]};
+function show(k){var d=INFO[k];$("info").innerHTML="<h2>"+d[0]+"</h2><p>"+d[1]+"</p>"}
+function upd(){for(var k in T)$(k).textContent=T[k]}
+function hi(k,on){var z=$(k==="f"?"zf":"z"+k);if(z)z.classList.toggle("on",on)}
+function pop(x,y,txt,col){var t=document.createElementNS(NS,"text");t.setAttribute("class","pop");t.setAttribute("x",x);t.setAttribute("y",y);t.setAttribute("fill",col);t.textContent=txt;layer.appendChild(t);
+var s=performance.now();(function f(n){var p=Math.min(1,(n-s)/1300);t.setAttribute("y",y-26*p);t.setAttribute("opacity",1-p);p<1?requestAnimationFrame(f):t.remove()})(s)}
+function arrive(k){
+hi(k,true);show(k);setTimeout(function(){hi(k,false)},900);
+if(k==="1"){T.atp+=2;T.car+=2;pop(85,100,"+2 ATP","var(--atp)")}
+if(k==="2"){T.atp+=2;T.car+=8;T.co2+=6;pop(124,262,"+2 ATP  +6 CO₂","var(--atp)")}
+if(k==="3"){T.atp+=26;T.o2u+=6;T.h2o+=6;pop(246,262,"+26 ATP  −6 O₂","var(--atp)")}
+if(k==="f"){T.lac+=2;pop(275,100,"+2 lactate","var(--co2)")}
+upd()}
+function spawn(i,aer){
+var c=document.createElementNS(NS,"circle");c.setAttribute("r",8);c.setAttribute("fill","var(--glu)");c.setAttribute("stroke","var(--ink)");c.setAttribute("stroke-width",1.5);c.setAttribute("cx",-20);c.setAttribute("cy",-20);layer.appendChild(c);
+var path=[{x:50,y:34,d:0},{x:85,y:92,d:900,k:"1"}];
+if(aer)path.push({x:180,y:150,d:900},{x:124,y:240,d:900,k:"2"},{x:246,y:240,d:1100,k:"3"});
+else path.push({x:275,y:92,d:1100,k:"f"});
+mols.push({el:c,path:path,i:0,t0:performance.now()+i*900,from:null,done:0})}
+function tick(n){
+var alive=0;
+mols.forEach(function(m){
+if(m.done)return;alive++;
+if(n<m.t0)return;
+var seg=m.path[m.i];
+if(!m.from){m.from={x:seg.x,y:seg.y};m.t0=n;m.i=1;if(m.path.length===1){m.done=1}
+seg=m.path[1];m.el.setAttribute("cx",m.from.x);m.el.setAttribute("cy",m.from.y)}
+else seg=m.path[m.i];
+var p=Math.min(1,(n-m.t0)/seg.d),e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+m.el.setAttribute("cx",m.from.x+(seg.x-m.from.x)*e);m.el.setAttribute("cy",m.from.y+(seg.y-m.from.y)*e);
+if(p>=1){if(seg.k)arrive(seg.k);
+if(m.i===m.path.length-1){m.done=1;m.el.remove()}
+else{m.from={x:seg.x,y:seg.y};m.i++;m.t0=n+(seg.k?650:0)}}
+});
+if(alive){requestAnimationFrame(tick)}else{running=0;$("run").disabled=false;$("g").disabled=false;$("o").disabled=false;mols=[]}}
+$("run").onclick=function(){
+if(running)return;running=1;$("run").disabled=true;$("g").disabled=true;$("o").disabled=true;
+var n=+$("g").value,o=+$("o").value;
+for(var i=0;i<n;i++)spawn(i,Math.random()*100<o);
+requestAnimationFrame(tick)};
+$("reset").onclick=function(){
+mols.forEach(function(m){m.el.remove();m.done=1});mols=[];running=0;
+for(var k in T)T[k]=0;upd();
+$("run").disabled=false;$("g").disabled=false;$("o").disabled=false;
+$("info").innerHTML="<h2>Ready</h2><p>Pick how much glucose and oxygen, then press Run. Tap a labelled area to learn what happens there.</p>"};
+$("g").oninput=function(){$("gv").textContent=this.value};
+$("o").oninput=function(){$("ov").textContent=this.value+"%"};
+["z1","z2","z3","zf"].forEach(function(id){var z=$(id);z.style.cursor="pointer";z.addEventListener("click",function(){show(z.dataset.s)})});
+})();
+</script>
+</body>
+</html>
