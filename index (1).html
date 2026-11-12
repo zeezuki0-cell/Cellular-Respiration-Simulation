@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cellular Respiration Simulation</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>Cellular Respiration</h1>
+  <p>Follow the 6 carbons of glucose. Do the activity to unlock the next stage.</p>
+</header>
+
+<nav id="tabs">
+  <button data-n="1">1 Glycolysis</button>
+  <button data-n="2">2 Pyruvate</button>
+  <button data-n="3">3 Krebs</button>
+  <button data-n="4">4 ETC</button>
+</nav>
+
+<div id="totals">
+  ATP: <b id="tATP">0</b> |
+  NADH: <b id="tNADH">0</b> |
+  FADH<sub>2</sub>: <b id="tFADH">0</b> |
+  CO<sub>2</sub>: <b id="tCO2">0</b>
+</div>
+
+<main>
+
+  <!-- STAGE 1 -->
+  <section class="stage" id="s1">
+    <h2>Stage 1: Glycolysis</h2>
+    <p class="where">Where: cytoplasm (no oxygen needed)</p>
+    <p>Each dot is one carbon. Click "Next step" to watch glucose change.</p>
+    <div class="area" id="area1"></div>
+    <p class="txt" id="txt1"></p>
+    <p>Step <b id="n1">0</b> / 7</p>
+    <button id="b1">Next step</button>
+    <p class="msg" id="m1"></p>
+  </section>
+
+  <!-- STAGE 2 -->
+  <section class="stage" id="s2">
+    <h2>Stage 2: Pyruvate oxidation</h2>
+    <p class="where">Where: pyruvate enters the mitochondrion</p>
+    <p>Click each pyruvate (3 carbons). One carbon leaves as CO<sub>2</sub>.</p>
+    <div class="area">
+      <div class="pyr" id="p1"></div>
+      <div class="pyr" id="p2"></div>
+    </div>
+    <p class="msg" id="m2"></p>
+  </section>
+
+  <!-- STAGE 3 -->
+  <section class="stage" id="s3">
+    <h2>Stage 3: Krebs cycle</h2>
+    <p class="where">Where: mitochondrial matrix</p>
+    <p>The 2-carbon acetyl-CoA joins the cycle. Go through all 8 steps, twice.</p>
+    <svg id="krebs" viewBox="0 0 300 300"></svg>
+    <p class="txt" id="txt3">Press "Next step" to start turn 1.</p>
+    <p>Turn <b id="turn">1</b> / 2 &nbsp; Step <b id="n3">0</b> / 8</p>
+    <button id="b3">Next step</button>
+    <button id="b3auto">Auto-play this turn</button>
+    <p class="msg" id="m3"></p>
+  </section>
+
+  <!-- STAGE 4 -->
+  <section class="stage" id="s4">
+    <h2>Stage 4: Electron transport chain</h2>
+    <p class="where">Where: inner mitochondrial membrane (needs oxygen)</p>
+    <p>Send NADH and FADH<sub>2</sub> through the complexes. They pump H<sup>+</sup> (protons) across the membrane. Then the protons flow back through ATP synthase. This is chemiosmosis.</p>
+    <svg id="etc" viewBox="0 0 340 260"></svg>
+    <p>Carriers left: <b id="left">0</b> &nbsp; Proton dots: <b id="pcount">0</b></p>
+    <button id="b4a">Send next carrier</button>
+    <button id="b4all">Send all carriers</button>
+    <button id="b4b" disabled>Open ATP synthase</button>
+    <p class="msg" id="m4"></p>
+    <button id="again" style="display:none">Start over</button>
+  </section>
+
+</main>
+
+<div id="nav">
+  <button id="back">Back</button>
+  <button id="next" disabled>Next</button>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
